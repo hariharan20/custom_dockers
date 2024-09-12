@@ -1,4 +1,4 @@
-image_name=ahn_laas
+image_name=ahn_laas_noetic
 xhost + local:docker
 
 echo "Starting docker container..."
