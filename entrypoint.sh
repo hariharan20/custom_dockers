@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 source "$HOME/.bashrc"
+source /opt/ros/melodic/setup.bash
 {
     chmod 777 -R /home/hariharan/catkin_ws/
     #colcon build --symlink-install
