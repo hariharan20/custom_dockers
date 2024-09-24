@@ -73,6 +73,9 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 30  && update
 RUN apt-get install ros-melodic-mbf-costmap-core ros-melodic-mbf-msgs -y
 RUN apt-get install libsuitesparse-dev libopenblas-dev -y
 RUN apt-get install ros-melodic-pr2-simulator -y
+RUN apt-get install ros-melodic-vision-msgs -y
+RUN apt-get install ros-melodic-libg2o -y
+RUN apt-get install ros-melodic-catkin python-catkin-tools -y
 #RUN source /opt/ros/humble/setup.bash
 # RUN apt install ros-humble-xacro -y
 # RUN apt install ros-humble-ros2-control -y
