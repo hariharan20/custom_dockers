@@ -60,6 +60,10 @@ RUN apt-get install apt-transport-https ca-certificates gnupg software-propertie
 
 
 # ROS Packages 
+RUN apt-get update 
+RUN apt-get install ros-noetic-navigation ros-noetic-pr2-simulator ros-noetic-costmap-converter ros-noetic-mbf-costmap-core ros-noetic-libg2o ros-noetic-mbf-msgs ros-noetic-pr2-tuckarm python3-pip python3-catkin-tools python-is-python3 ros-noetic-marti-common-msgs ros-noetic-vision-msgs -y
+RUN pip3 install scipy
+
 # RUN apt-get install ros-melodic-costmap-2d -y
 # RUN apt-get install ros-melodic-base-local-planner -y
 # RUN apt-get install ros-melodic-costmap-converter -y
