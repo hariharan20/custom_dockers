@@ -11,13 +11,11 @@ RUN dpkg-reconfigure locales
 
 
 
-# ENV ROS_DISTRO humble
-# ARG INSTALL_PACKAGE=desktop
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 RUN apt-get install -y curl
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-RUN apt-get update
-RUN apt-get install -y ros-noetic-desktop-full
+RUN apt-get update --fix-missing
+RUN apt-get install -y ros-noetic-ros-base 
 # RUN apt-get update -q && \
     # apt-get install -y curl gnupg2 lsb-release && \
     # curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
@@ -50,7 +48,7 @@ WORKDIR /home/hariharan/catkin_ws
 RUN cp -r /catkin_ws /home/hariharan
 RUN chown -R $UNAME:${UNAME} /home/hariharan
 RUN chmod 775 /home/hariharan
-RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
+RUN echo "source /opt/ros/noetic/setup.bash" >> /home/hariharan/.bashrc 
 RUN echo "source /home/hariharan/catkin_ws/devel/setup.bash" >> /home/hariharan/.bashrc
 # RUN echo "source /opt/ros/humble/setup.bash" >> /home/hariharan/.bashrc
 RUN apt-get update; apt-get install tmux -y
@@ -71,6 +69,10 @@ RUN apt-get install libopenblas-dev -y
 # RUN apt-get install ros-melodic-mbf-costmap-core ros-melodic-mbf-msgs -y
 # RUN apt-get install libsuitesparse-dev libopenblas-dev -y
 # RUN apt-get install ros-melodic-pr2-simulator -y
+RUN echo "alias t='tmux new -s $1'" >> /home/hariharan/.bashrc
+RUN echo 'alias ta="tmux a -t $1"' >> /home/hariharan/.bashrc
+RUN echo 'alias tk="tmux kill-session -t $1"' >> /home/hariharan/.bashrc
+RUN echo 'alias tls="tmux ls"' >> /home/hariharan/.bashrc 
 
 RUN cd home/hariharan/catkin_ws;sudo chmod 777 -R .
 # colcon build --symlink-install --executor sequential
