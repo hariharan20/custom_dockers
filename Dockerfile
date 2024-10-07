@@ -15,7 +15,7 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main"
 RUN apt-get install -y curl
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 RUN apt-get update --fix-missing
-RUN apt-get install -y ros-noetic-ros-base 
+RUN apt-get install -y ros-noetic-desktop-full
 # RUN apt-get update -q && \
     # apt-get install -y curl gnupg2 lsb-release && \
     # curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
