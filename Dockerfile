@@ -29,11 +29,11 @@ RUN apt-get install -y ros-noetic-desktop-full
     # rm -rf /var/lib/apt/lists/*
 
 
-RUN mkdir -p /catkin_ws/src 
+# RUN mkdir -p /catkin_ws/src 
 # RUN cd /catkin_ws; ./opt/ros/melodic/setup.bash
 # RUN cd /catkin_ws; colcon build --symlink-install --executor sequential
 
-
+RUN apt-get update --fix-missing
 RUN apt-get install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential python3-rosdep -y
 RUN rosdep init
 RUN rosdep update
@@ -44,12 +44,12 @@ RUN groupadd -g ${GID} -o${UNAME}
 RUN useradd -m -u ${UID} -o -s /bin/bash ${UNAME}
 RUN echo 'hariharan:hariharan' | chpasswd
 RUN adduser ${UNAME} sudo
-WORKDIR /home/hariharan/catkin_ws
-RUN cp -r /catkin_ws /home/hariharan
+WORKDIR /home/hariharan
+# RUN cp -r /catkin_ws /home/hariharan
 RUN chown -R $UNAME:${UNAME} /home/hariharan
 RUN chmod 775 /home/hariharan
 RUN echo "source /opt/ros/noetic/setup.bash" >> /home/hariharan/.bashrc 
-RUN echo "source /home/hariharan/catkin_ws/devel/setup.bash" >> /home/hariharan/.bashrc
+# RUN echo "source /home/hariharan/catkin_ws/devel/setup.bash" >> /home/hariharan/.bashrc
 # RUN echo "source /opt/ros/humble/setup.bash" >> /home/hariharan/.bashrc
 RUN apt-get update; apt-get install tmux -y
 RUN apt-get install nano -y
@@ -74,9 +74,9 @@ RUN echo 'alias ta="tmux a -t $1"' >> /home/hariharan/.bashrc
 RUN echo 'alias tk="tmux kill-session -t $1"' >> /home/hariharan/.bashrc
 RUN echo 'alias tls="tmux ls"' >> /home/hariharan/.bashrc 
 
-RUN cd home/hariharan/catkin_ws;sudo chmod 777 -R .
+RUN cd home/hariharan;sudo chmod 777 -R .
 # colcon build --symlink-install --executor sequential
 USER root 
-ENTRYPOINT [ "/bin/bash" , "/home/hariharan/catkin_ws/src/custom_dockers/entrypoint.sh" ]
+ENTRYPOINT [ "/bin/bash" , "/home/hariharan/custom_dockers/entrypoint.sh" ]
 
 
