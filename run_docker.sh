@@ -1,4 +1,4 @@
-image_name=ahn_laas_noetic
+image_name=ahn_laas_noetic_2
 # xhost + local:docker
 
 echo "Starting docker container..."
@@ -9,7 +9,8 @@ docker run --privileged --network host \
            --volume="$HOME/.Xauthority:/home/hariharan/.Xauthority:rw" \
            --env XAUTHORITY=/home/hariharan/.Xauthority \
            --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-           -v $(pwd)/../:/home/hariharan \
+           -v $(pwd)/../../../:/home/hariharan/catkin_ws \
+           -v $(pwd)/:/home/hariharan/custom_dockers \
            -v /dev/dri:/dev/dri \
            -v /dev/bus/usb:/dev/bus/usb \
            -v /dev/input:/dev/input \

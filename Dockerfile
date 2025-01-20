@@ -12,7 +12,7 @@ RUN apt-get install -y curl
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 RUN apt-get update --fix-missing
 RUN apt-get install -y ros-noetic-desktop-full
-
+RUN mkdir /custom_dockers
 RUN apt-get update --fix-missing
 RUN apt-get install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential python3-rosdep -y
 RUN rosdep init
@@ -25,6 +25,8 @@ RUN useradd -m -u ${UID} -o -s /bin/bash ${UNAME}
 RUN echo 'hariharan:hariharan' | chpasswd
 RUN adduser ${UNAME} sudo
 WORKDIR /home/hariharan
+RUN mkdir /home/hariharan/catkin_ws
+RUN cp -r /custom_dockers /home/hariharan
 RUN chown -R $UNAME:${UNAME} /home/hariharan
 RUN chmod 775 /home/hariharan
 RUN echo "source /opt/ros/noetic/setup.bash" >> /home/hariharan/.bashrc 

@@ -7,7 +7,7 @@ source "$HOME/.bashrc"
     #source /home/hariharan/ros2_ws/installsetup.bash
     echo "Container is Running"
     exec su hariharan
-    colcon build --symlink-install
+    # colcon build --symlink-install
     # source /home/hariharan/catkin_ws/devel/setup.bash
 
 } || {
