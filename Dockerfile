@@ -44,7 +44,7 @@ RUN echo "alias t='tmux new -s $1'" >> /home/hariharan/.bashrc
 RUN echo 'alias ta="tmux a -t $1"' >> /home/hariharan/.bashrc
 RUN echo 'alias tk="tmux kill-session -t $1"' >> /home/hariharan/.bashrc
 RUN echo 'alias tls="tmux ls"' >> /home/hariharan/.bashrc 
-
+RUN echo 'if [ -d "/home/hariharan/catkin_ws/devel" ]; then source /home/hariharan/catkin_ws/devel/setup.bash; fi' >> /home/hariharan/.bashrc
 RUN cd home/hariharan;sudo chmod 777 -R .
 USER root 
 ENTRYPOINT [ "/bin/bash" , "/home/hariharan/custom_dockers/entrypoint.sh" ]
