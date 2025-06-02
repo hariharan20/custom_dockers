@@ -19,13 +19,13 @@ RUN export ROS_APT_SOURCE_VERSION=1.1.0
 RUN curl -L -o /tmp/ros2-apt-source.deb https://github.com/ros-infrastructure/ros-apt-source/releases/download/1.1.0/ros2-apt-source_1.1.0.jammy_all.deb
 RUN apt install /tmp/ros2-apt-source.deb
 
-RUN mkdir -p /home/hariharan/ros2_humble
+RUN mkdir /ros2_humble
 
-RUN wget -O /home/hariharan/ros2_humble/ros2_file.tar.bz2 https://github.com/ros2/ros2/releases/download/humble-20250331/ros2-humble-20250331-linux-jammy-amd64.tar.bz2
-RUN cd /home/hariharan/ros2_humble && ls 
+RUN wget -O /ros2_humble/ros2_file.tar.bz2 https://github.com/ros2/ros2/releases/download/humble-20250331/ros2-humble-20250331-linux-jammy-amd64.tar.bz2
+RUN cd /ros2_humble && ls 
 RUN apt-get update && apt-get install -y lbzip2
 
-RUN cd /home/hariharan/ros2_humble && tar xf /home/hariharan/ros2_humble/ros2_file.tar.bz2
+RUN cd /ros2_humble && tar xf /ros2_humble/ros2_file.tar.bz2
 
 
 ENV TZ=Europe/London
@@ -41,7 +41,7 @@ ENV ROS_DISTRO=humble
 RUN rosdep update
 RUN apt upgrade -y
 RUN apt update
-RUN rosdep install --from-paths /home/hariharan/ros2_humble/ros2-linux/share --ignore-src -y --skip-keys "cyclonedds fastcdr fastrtps rti-connext-dds-6.0.1 urdfdom_headers"
+RUN rosdep install --from-paths /ros2_humble/ros2-linux/share --ignore-src -y --skip-keys "cyclonedds fastcdr fastrtps rti-connext-dds-6.0.1 urdfdom_headers"
 RUN apt install -y ros-humble-desktop --fix-missing
 RUN apt install ros-dev-tools -y
 RUN apt install ros-dev-tools
