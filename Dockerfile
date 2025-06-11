@@ -44,7 +44,11 @@ RUN apt update
 RUN rosdep install --from-paths /ros2_humble/ros2-linux/share --ignore-src -y --skip-keys "cyclonedds fastcdr fastrtps rti-connext-dds-6.0.1 urdfdom_headers"
 RUN apt install -y ros-humble-desktop --fix-missing
 RUN apt install ros-dev-tools -y
-RUN apt install ros-dev-tools
+RUN apt-get install curl lsb-release gnupg
+RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+RUN apt-get update
+RUN apt-get install gz-harmonic -y
 
 
 ARG UNAME=hariharan
@@ -76,6 +80,13 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /home/hariharan/.bashrc
 RUN echo 'alias l="ls"' >> /home/hariharan/.bashrc
 
 RUN echo 'if [ -d "/home/hariharan/colcon_ws/install" ]; then source /home/hariharan/colcon_ws/install/setup.bash; fi' >> /home/hariharan/.bashrc
+
+
+RUN apt install ros-humble-joint-state-publisher-gui -y
+RUN apt install ros-humble-xacro -y
+RUN apt install ros-humble-sdformat-urdf -y
+ENV ROS_DOMAIN_ID=94
+
 
 RUN chmod -R 777 /home/hariharan
 USER root 
