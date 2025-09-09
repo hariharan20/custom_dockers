@@ -37,16 +37,15 @@ RUN apt-get update && apt-get install -y \
     ros-humble-sdformat-urdf \
     python3-rosdep
 
+    
+    
+    
+RUN curl -sSL http://get.gazebosim.org | sh
+RUN apt-get install ros-humble-gazebo-ros-pkgs ros-humble-gazebo-ros2-control ros-humble-ros2-controllers -y
+RUN apt-get install ros-humble-navigation2 ros-humble-nav2-bringup -y
+
+
 RUN rosdep init && rosdep update 
-RUN rm -rf /var/lib/apt/lists/*
-
-
-
-RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
-    > /etc/apt/sources.list.d/gazebo-stable.list 
-RUN apt-get update
-RUN apt-get install gz-harmonic -y
 RUN rm -rf /var/lib/apt/lists/*
 
 
