@@ -2,14 +2,9 @@
 set -e
 source "$HOME/.bashrc"
 {
-    chmod 777 -R /home/hariharan/
-    #colcon build --symlink-install
-    #source /home/hariharan/ros2_ws/installsetup.bash
     echo "Container is Running"
-    exec su hariharan
-    # colcon build --symlink-install
-    # source /home/hariharan/catkin_ws/devel/setup.bash
-
+    exec /bin/bash
 } || {
     echo "container failed, please report to Hariharan"
+    exit 1
 }
