@@ -1,95 +1,87 @@
-FROM ubuntu:jammy
-
-
-
-
-RUN apt update &&  apt install locales -y 
-RUN locale-gen en_US en_US.UTF-8
-RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-RUN export LANG=en_US.UTF-8
-RUN apt install software-properties-common -y
-RUN add-apt-repository universe
-
-
-
-
-RUN apt install curl -y
-RUN apt install wget -y
-RUN export ROS_APT_SOURCE_VERSION=1.1.0
-RUN curl -L -o /tmp/ros2-apt-source.deb https://github.com/ros-infrastructure/ros-apt-source/releases/download/1.1.0/ros2-apt-source_1.1.0.jammy_all.deb
-RUN apt install /tmp/ros2-apt-source.deb
-
-RUN mkdir /ros2_humble
-
-RUN wget -O /ros2_humble/ros2_file.tar.bz2 https://github.com/ros2/ros2/releases/download/humble-20250331/ros2-humble-20250331-linux-jammy-amd64.tar.bz2
-RUN cd /ros2_humble && ls 
-RUN apt-get update && apt-get install -y lbzip2
-
-RUN cd /ros2_humble && tar xf /ros2_humble/ros2_file.tar.bz2
-
-
-ENV TZ=Europe/London
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-
-RUN apt update
-RUN apt install -y python3-rosdep
-RUN rosdep init
-
-ENV ROS_DISTRO=humble
-
-RUN rosdep update
-RUN apt upgrade -y
-RUN apt update
-RUN rosdep install --from-paths /ros2_humble/ros2-linux/share --ignore-src -y --skip-keys "cyclonedds fastcdr fastrtps rti-connext-dds-6.0.1 urdfdom_headers"
-RUN apt install -y ros-humble-desktop --fix-missing
-RUN apt install ros-dev-tools -y
-RUN apt-get install curl lsb-release gnupg
-RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
-RUN apt-get update
-RUN apt-get install gz-harmonic -y
+FROM ubuntu:22.04
 
 
 ARG UNAME=hariharan
 ARG UID=1000
 ARG GID=1000
-RUN groupadd -g ${GID} -o${UNAME}
-RUN useradd -m -u ${UID} -o -s /bin/bash ${UNAME}
-RUN echo 'hariharan:hariharan' | chpasswd
-RUN adduser ${UNAME} sudo
-WORKDIR /home/hariharan
+
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    locales software-properties-common curl wget lsb-release gnupg \
+    python3-pip tmux nano sudo lbzip2
+
+RUN locale-gen en_US.UTF-8
+RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 
+RUN rm -rf /var/lib/apt/lists/*
 
 
 
-RUN mkdir /home/hariharan/colcon_ws
-RUN mkdir /custom_dockers
-RUN cp -r /custom_dockers /home/hariharan
-RUN chown -R $UNAME:${UNAME} /home/hariharan
-RUN apt-get update; apt-get install tmux -y
-RUN apt-get install nano -y
+ENV LANG=en_US.UTF-8
+ENV TZ=Europe/London
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
-RUN apt-get install -y python3-pip
-RUN pip3 install scipy
-RUN echo "alias t='tmux new -s $1'" >> /home/hariharan/.bashrc
-RUN echo 'alias ta="tmux a -t $1"' >> /home/hariharan/.bashrc
-RUN echo 'alias tk="tmux kill-session -t $1"' >> /home/hariharan/.bashrc
-RUN echo 'alias tls="tmux ls"' >> /home/hariharan/.bashrc 
-RUN echo "source /opt/ros/humble/setup.bash" >> /home/hariharan/.bashrc
-RUN echo 'alias l="ls"' >> /home/hariharan/.bashrc
-
-RUN echo 'if [ -d "/home/hariharan/colcon_ws/install" ]; then source /home/hariharan/colcon_ws/install/setup.bash; fi' >> /home/hariharan/.bashrc
 
 
-RUN apt install ros-humble-joint-state-publisher-gui -y
-RUN apt install ros-humble-xacro -y
-RUN apt install ros-humble-sdformat-urdf -y
+RUN curl -L -o /tmp/ros2-apt-source.deb https://github.com/ros-infrastructure/ros-apt-source/releases/download/1.1.0/ros2-apt-source_1.1.0.jammy_all.deb
+RUN apt-get update
+RUN apt install -y /tmp/ros2-apt-source.deb
+
+ENV ROS_DISTRO=humble
+
+
+RUN apt-get update && apt-get install -y \
+    ros-humble-desktop ros-dev-tools \
+    ros-humble-joint-state-publisher-gui \
+    ros-humble-xacro \
+    ros-humble-sdformat-urdf \
+    python3-rosdep
+
+RUN rosdep init && rosdep update 
+RUN rm -rf /var/lib/apt/lists/*
+
+
+
+RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
+    > /etc/apt/sources.list.d/gazebo-stable.list 
+RUN apt-get update
+RUN apt-get install gz-harmonic -y
+RUN rm -rf /var/lib/apt/lists/*
+
+
+
+RUN groupadd -g ${GID} ${UNAME}
+RUN useradd -m -u ${UID} -g ${GID} -s /bin/bash ${UNAME} 
+RUN echo "${UNAME}:${UNAME}" | chpasswd
+RUN usermod -aG sudo ${UNAME}
+
+
+
+WORKDIR /home/${UNAME}
+
+
+RUN mkdir -p colcon_ws/src custom_dockers
+RUN echo "source /opt/ros/humble/setup.bash" >> /home/${UNAME}/.bashrc
+RUN echo 'if [ -f "/home/${UNAME}/colcon_ws/install/setup.bash" ]; then source /home/${UNAME}/colcon_ws/install/setup.bash; fi' >> /home/${UNAME}/.bashrc 
+RUN echo "alias t='tmux new -s \$1'" >> /home/${UNAME}/.bashrc
+RUN echo 'alias ta="tmux a -t $1"' >> /home/${UNAME}/.bashrc
+RUN echo 'alias tk="tmux kill-session -t $1"' >> /home/${UNAME}/.bashrc
+RUN echo 'alias tls="tmux ls"' >> /home/${UNAME}/.bashrc 
+RUN echo 'alias l="ls"' >> /home/${UNAME}/.bashrc
+
+
+
+
 ENV ROS_DOMAIN_ID=94
+RUN pip3 install scipy
+
+COPY entrypoint.sh /home/${UNAME}/custom_dockers/entrypoint.sh
+RUN chmod +x /home/${UNAME}/custom_dockers/entrypoint.sh
+USER ${UNAME}
 
 
-RUN chmod -R 777 /home/hariharan
-USER root 
+
 
 
 ENTRYPOINT [ "/bin/bash" , "/home/hariharan/custom_dockers/entrypoint.sh" ]
