@@ -67,7 +67,7 @@ RUN echo 'if [ -d "/home/${UNAME}/catkin_ws/devel" ]; then source /home/${UNAME}
 
 
 RUN pip3 install scipy
-
+RUN pip install langchain-ollama langchain-core playsound gtts
 COPY entrypoint.sh /home/${UNAME}/custom_dockers/entrypoint.sh
 RUN chmod +x /home/${UNAME}/custom_dockers/entrypoint.sh
 
